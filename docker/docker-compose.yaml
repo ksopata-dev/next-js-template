@@ -5,3 +5,23 @@ services:
     image: next-js-templateclear
     ports:
       - "3000:3000"
+  postgres-db:
+    image: postgres:16
+    container_name: pg-db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: next-js-template
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpassword
+  postgres-db-admin:
+    image: dpage/pgadmin4:latest
+    container_name: pg-db-admin
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pguser@postgres.com
+      PGADMIN_DEFAULT_PASSWORD: pgpassword
+    volumes:
+      - ./pg-servers.json:/pgadmin4/servers.json
+      - ./pgpass:/pgpass
