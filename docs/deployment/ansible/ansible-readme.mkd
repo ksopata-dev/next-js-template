@@ -1,0 +1,70 @@
+## Guide
+
+https://www.youtube.com/playlist?list=PLT98CRl2KxKEUHie1m24-wkyHpEsa4Y70
+
+## Starting local containers
+
+from ./docker/deployment directory run
+
+```
+docker compose up -d
+This should create two linux images and containers - one for the ansible node and the second one for nodejs node.
+```
+
+## Connecting via putty
+
+Putty can be downloaded from: https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe
+
+After running, fill the:
+
+`Host Name` with `localhost`,
+`Port` with `2222`,
+
+![putty configuration](image.png)
+
+In new window, when prompted for username and password use ans_dep|password.
+
+![putty successfull login](image-1.png)
+
+## SSH connection between nodes
+
+To connect to `nodejs` from `ansible` node below command can be used:
+
+```
+ssh host.docker.internal -p 2222
+```
+
+![docker ssh connection from ansible node](image-2.png)
+
+## Generating and logging with the Ansible key
+
+from the `ansible` node run the:
+
+```
+ssh-keygen -t ed25519 -C "ansible"
+```
+
+- for `directory`, please provide the /root/.ssh/ansible
+- for `passphrase`, please do not provide anything
+
+![successfully key generation](image-3.png)
+
+extracted key can be then imported into the nodejs node by running the:
+
+```
+ssh-copy-id -i /home/ans_dep/.ssh/ansible -p 2222 host.docker.internal
+```
+
+When connecting to the nodejs node, the key should be now added to authorized_keys
+
+![authorized keys](image-4.png)
+
+Now, when connecting with:
+
+```
+ssh -i /home/ans_dep/.ssh/ansible -p 2222 host.docker.internal
+```
+
+there should be no password prompt
+
+![no password promopt](image-5.png)

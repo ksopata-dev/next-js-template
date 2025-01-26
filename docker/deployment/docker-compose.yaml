@@ -13,7 +13,5 @@ services:
   nodejs:
     build: ./nodejs
     container_name: nodejs
-    command: /bin/sh
-    tty: true
     ports:
       - "2222:22"
