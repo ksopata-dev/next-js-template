@@ -1,0 +1,19 @@
+version: "3.0"
+
+name: next-js-template-deployment
+services:
+  ansible:
+    build: ./ansible
+    container_name: ansible
+    command: /bin/bash
+    tty: true
+    environment:
+      - ANSIBLE_HOST_KEY_CHECKING=False
+
+  nodejs:
+    build: ./nodejs
+    container_name: nodejs
+    command: /bin/sh
+    tty: true
+    ports:
+      - "2222:22"
