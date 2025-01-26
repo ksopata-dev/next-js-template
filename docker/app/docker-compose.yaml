@@ -1,7 +1,7 @@
-name: next-js-template
+name: next-js-template-app
 services:
   web-app:
-    build: ..\web-app
+    build: ..\..\web-app
     image: next-js-templateclear
     ports:
       - "3000:3000"

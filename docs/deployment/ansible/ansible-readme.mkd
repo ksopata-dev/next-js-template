@@ -44,7 +44,7 @@ from the `ansible` node run the:
 ssh-keygen -t ed25519 -C "ansible"
 ```
 
-- for `directory`, please provide the /root/.ssh/ansible
+- for `directory`, please provide the /home/ans_dep/.ssh/ansible
 - for `passphrase`, please do not provide anything
 
 ![successfully key generation](image-3.png)
