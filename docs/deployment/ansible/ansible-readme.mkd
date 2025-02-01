@@ -90,3 +90,12 @@ Now solution can be dowloaded by:
 ```
 ssh-agent bash -c 'ssh-add /home/ans_dep/.ssh/ansible; git clone git@github.com:ksopata-dev/next-js-template.git'
 ```
+
+We can also configure git login details (to check current config use `cat ~/.gitconfig`):
+
+```
+git config --global user.name "XXX XXX"
+git config --global user.email "XXX@XXX.XXX"
+```
+
+# Configuring ansible
