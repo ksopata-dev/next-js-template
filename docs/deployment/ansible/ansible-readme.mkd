@@ -34,6 +34,8 @@ To connect to `nodejs` from `ansible` node below command can be used:
 ssh host.docker.internal -p 2222
 ```
 
+(password: `password`)
+
 ![docker ssh connection from ansible node](image-2.png)
 
 ## Generating and logging with the Ansible key
@@ -68,3 +70,23 @@ ssh -i /home/ans_dep/.ssh/ansible -p 2222 host.docker.internal
 there should be no password prompt
 
 ![no password promopt](image-5.png)
+
+## Adding key to Github SSH
+
+On ansible node `cd` to directory with previously generated key and read the `.pub` file content
+
+![reading pub file](image-6.png)
+
+Within Github, navigate to Settings > SSH keys and create new SSH key
+
+provide the name of your choice and add `.pub` file content as a key
+
+![adding new key in git](image-7.png)
+
+![successfully added SSH key](image-8.png)
+
+Now solution can be dowloaded by:
+
+```
+ssh-agent bash -c 'ssh-add /home/ans_dep/.ssh/ansible; git clone git@github.com:ksopata-dev/next-js-template.git'
+```

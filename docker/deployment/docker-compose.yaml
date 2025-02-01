@@ -9,6 +9,8 @@ services:
     tty: true
     environment:
       - ANSIBLE_HOST_KEY_CHECKING=False
+    ports:
+      - "2223:22"
 
   nodejs:
     build: ./nodejs
