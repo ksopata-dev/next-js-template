@@ -102,6 +102,8 @@ git config --global user.email "XXX@XXX.XXX"
 
 # Configuring ansible
 
+List of the servers can be configured with `$/docker/deployment/ansible/inventory` file.
+
 Ansible commands should be run from `/home/ans_dep/next-js-template/docker/deployment/ansible` directory
 
 To check the `inventory` file configuration you should be able to run the:
@@ -113,3 +115,15 @@ ansible all -m ping
 Below result should indicate successfull ping
 
 ![successfully inventory ping](image-10.png)
+
+# Useful commands:
+
+```
+ansible all -m gather_facts
+```
+
+gathers details about the connected hosts. (Can be limited with `--limit`)
+
+```
+
+```
