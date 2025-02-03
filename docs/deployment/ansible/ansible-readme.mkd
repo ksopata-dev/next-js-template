@@ -51,6 +51,8 @@ ssh-keygen -t ed25519 -C "ansible"
 
 ![successfully key generation](image-3.png)
 
+_note: if using different key name then ansible, this will need to be reflected in the $/deployment/ansible/ansible.cfg file_
+
 extracted key can be then imported into the nodejs node by running the:
 
 ```
@@ -99,3 +101,13 @@ git config --global user.email "XXX@XXX.XXX"
 ```
 
 # Configuring ansible
+
+To check the `inventory` file configuration you should be able to run the:
+
+```
+ansible all --key-file ~/.ssh/ansible -i ~/next-js-template/docker/deployment/ansible -m ping
+```
+
+Below result should indicate successfull ping
+
+![successfully inventory ping](image-9.png)
