@@ -6,6 +6,12 @@
     app_path: /home/ans_dep/next-js-template/web-app
     deployment_path: /var/www/nextjs_app
   tasks:
+    - name: ensure rsync is installed
+      apt:
+        name: rsync
+        state: present
+      become: yes
+
     - name: copy app to remote server
       synchronize:
         src: "{{ app_path }}"
