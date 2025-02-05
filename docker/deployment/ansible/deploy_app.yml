@@ -28,18 +28,18 @@
 
     - name: copy built app to remote server
       synchronize:
-        src: '{{ app_path }}/.next'
-        dest: '{{ remote_path }}'
+        src: "{{ app_path }}/.next"
+        dest: "{{ remote_path }}"
         recursive: yes
         delete: yes
-    
+
     - name: copy static files to remote server
       synchronize:
-        src: '{{ app_path }}/public'
-        destr: '{{ remote_path}}/public'
+        src: "{{ app_path }}/public"
+        destr: "{{ remote_path}}/public"
         recursive: yes
         delete: yes
-    
+
     - name: create systemd service file for next.js
       copy:
         dest: /etc/systemd/system/nextj.service
@@ -59,13 +59,13 @@
           WantedBy=multi-user.target
         become: yes
 
-      - name: reload systemd
-        command: systemctl daemon-reload
-        become: yes
+    - name: reload systemd
+      command: systemctl daemon-reload
+      become: yes
 
-      - name: start and enable next.js service
-        systemd:
-          name: nextjs
-          state: started
-          enabled: yes
-        become: yes
+    - name: start and enable next.js service
+      systemd:
+        name: nextjs
+        state: started
+        enabled: yes
+      become: yes
