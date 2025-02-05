@@ -4,8 +4,15 @@
   become: true
   vars:
     app_path: /home/ans_dep/next-js-template/web-app
-    remote_path: /var/www/nextjs_app
+    deployment_path: /var/www/nextjs_app
   tasks:
+    - name: copy app to remote server
+      synchronize:
+        src: "{{ app_path }}"
+        dest: "{{ app_path }}"
+        recursive: yes
+        delete: yes
+
     - name: ensure node.js is installed
       apt:
         name: nodejs
@@ -37,19 +44,11 @@
       args:
         chdir: "{{ app_path }}"
 
-    - name: copy built app to remote server
-      synchronize:
-        src: "{{ app_path }}/.next"
-        dest: "{{ remote_path }}"
-        recursive: yes
-        delete: yes
+    - name: copy built app to deployment path
+      command: mv "{{ app_path }}/.next" "{{ deployment_path }}"
 
-    - name: copy static files to remote server
-      synchronize:
-        src: "{{ app_path }}/public"
-        destr: "{{ remote_path}}/public"
-        recursive: yes
-        delete: yes
+    - name: copy static files to deployment path
+      command: mv "{{ app_path }}/public" "{{ deployment_path }}/public"
 
     - name: create systemd service file for next.js
       copy:
@@ -62,7 +61,7 @@
           [Service]
           Type=simple
           User=www-data
-          WorkingDirectory={{ remote_path }}
+          WorkingDirectory={{ deployment_path }}
           ExectStart=/usr/bin/npm start
           Restart=on-failure
 
