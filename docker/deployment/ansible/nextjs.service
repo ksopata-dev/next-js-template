@@ -1,0 +1,13 @@
+[Unit]
+Description=Next.js Application
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory={{ deployment_path }}
+ExectStart=/usr/bin/npm start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

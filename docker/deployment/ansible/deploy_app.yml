@@ -5,6 +5,7 @@
   vars:
     copy_to_directory: /home/ans_dep/next-js-template
     app_path: /home/ans_dep/next-js-template/web-app
+    service_file_path: /home/ans_dep/next-js-template/docker/deployment/ansible/nextjs.service
     deployment_path: /var/www/nextjs_app
   tasks:
     - name: ensure rsync is installed
@@ -56,23 +57,11 @@
       command: mv "{{ app_path }}/public" "{{ deployment_path }}/public"
 
     - name: create systemd service file for next.js
-      copy:
-        dest: /etc/systemd/system/nextj.service
-        content: |
-          [Unit]
-          Description=Next.js Application
-          After=network.target
-
-          [Service]
-          Type=simple
-          User=www-data
-          WorkingDirectory={{ deployment_path }}
-          ExectStart=/usr/bin/npm start
-          Restart=on-failure
-
-          [Install]
-          WantedBy=multi-user.target
-        become: yes
+      synchronize:
+        src: "{{ service_file_path }}"
+        dest: /etc/systemd/system/
+        recursive: yes
+        delete: yes
 
     - name: reload systemd
       command: systemctl daemon-reload
