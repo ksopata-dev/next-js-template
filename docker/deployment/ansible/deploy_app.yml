@@ -7,9 +7,8 @@
     deployment_path: /var/www/nextjs_app
   tasks:
     - name: ensure rsync is installed
-      yum:
+      package:
         name: rsync
-        state: latest
 
     - name: copy app to remote server
       synchronize:
