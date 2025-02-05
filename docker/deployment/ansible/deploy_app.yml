@@ -1,0 +1,71 @@
+---
+- name: build and deploy Next.js app
+  become: true
+  vars:
+    app_path: /home/ans_dep/next-js-template/web-app
+    remote_path: /var/www/nextjs_app
+  tasks:
+    - name: ensure node.js is installed
+      apt:
+        name: nodejs
+        state: present
+      become: yes
+    - name: ensure npm is installed
+      apt:
+        name: npm
+        state: present
+      become: yes
+
+    - name: install dependencies
+      command: npm install
+      args:
+        chdir: "{{ app_path }}"
+
+    - name: build the next.js app
+      command: npm run build
+      args:
+        chdir: "{{ app_path }}"
+
+    - name: copy built app to remote server
+      synchronize:
+        src: "{{ app_path }}"/.next"
+        dest: "{{ remote_path }}"
+        recursive: yes
+        delete: yes
+    
+    - name: copy static files to remote server
+      synchronize:
+        src: "{{ app_path }}"/public
+        destr: "{{ remote_path}}"/public
+        recursive: yes
+        delete: yes
+    
+    - name: create systemd service file for next.js
+      copy:
+        dest: /etc/systemd/system/nextj.service
+        content: |
+          [Unit]
+          Description=Next.js Application
+          After=network.target
+
+          [Service]
+          Type=simple
+          User=www-data
+          WorkingDirectory={{ remote_path }}
+          ExectStart=/usr/bin/npm start
+          Restart=on-failure
+
+          [Install]
+          WantedBy=multi-user.target
+        become: yes
+
+      - name: reload systemd
+        command: systemctl daemon-reload
+        become: yes
+
+      - name: start and enable next.js service
+        systemd:
+          name: nextjs
+          state: started
+          enabled: yes
+        become: yes

@@ -102,7 +102,7 @@ git config --global user.email "XXX@XXX.XXX"
 
 # Configuring ansible
 
-List of the servers can be configured with `$/docker/deployment/ansible/inventory` file.
+List of the servers to use for deployment can be configured with `$/docker/deployment/ansible/inventory` file.
 
 Ansible commands should be run from `/home/ans_dep/next-js-template/docker/deployment/ansible` directory
 
