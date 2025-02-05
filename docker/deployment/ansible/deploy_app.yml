@@ -1,5 +1,6 @@
 ---
 - name: build and deploy Next.js app
+  hosts: all
   become: true
   vars:
     app_path: /home/ans_dep/next-js-template/web-app
