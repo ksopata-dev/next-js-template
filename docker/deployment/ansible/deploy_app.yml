@@ -6,12 +6,6 @@
     app_path: /home/ans_dep/next-js-template/web-app
     remote_path: /var/www/nextjs_app
   tasks:
-    - name: fetch files to server
-      fetch:
-        src: "{{ app_path }}"
-        dest: "{{ app_path }}"
-        flat: no
-
     - name: ensure node.js is installed
       apt:
         name: nodejs
