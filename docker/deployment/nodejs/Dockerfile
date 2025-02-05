@@ -4,6 +4,8 @@ RUN apt-get update
 RUN apt-get install -y openssh-server 
 RUN apt-get install sudo
 RUN mkdir /var/run/sshd 
+RUN mkdir /home/ans_dep/next-js-template
+RUN mkdir /home/ans_dep/next-js-template/web-app 
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/ssh_config
 
 RUN useradd -m -s /bin/bash ans_dep && \

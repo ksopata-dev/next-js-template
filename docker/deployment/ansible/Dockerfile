@@ -9,6 +9,7 @@ RUN apt-get install -y sudo
 RUN apt-add-repository --yes --update ppa:ansible/ansible  
 RUN apt-get install -y ansible 
 RUN apt-get install -y openssh-server
+RUN apt-get install -y rsync
 RUN apt-get clean;
 
 RUN useradd -m -s /bin/bash ans_dep && \
