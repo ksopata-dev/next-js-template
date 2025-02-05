@@ -28,15 +28,15 @@
 
     - name: copy built app to remote server
       synchronize:
-        src: "{{ app_path }}"/.next"
-        dest: "{{ remote_path }}"
+        src: '{{ app_path }}/.next'
+        dest: '{{ remote_path }}'
         recursive: yes
         delete: yes
     
     - name: copy static files to remote server
       synchronize:
-        src: "{{ app_path }}"/public
-        destr: "{{ remote_path}}"/public
+        src: '{{ app_path }}/public'
+        destr: '{{ remote_path}}/public'
         recursive: yes
         delete: yes
     
