@@ -3,8 +3,8 @@
   hosts: all
   become: true
   vars:
-    ansible_node_path: /home/ans_dep/next-js-template/web-app
-    app_path: /home/ans_dep/next-js-template
+    copy_to_directory: /home/ans_dep/next-js-template
+    app_path: /home/ans_dep/next-js-template/web-app
     deployment_path: /var/www/nextjs_app
   tasks:
     - name: ensure rsync is installed
@@ -13,8 +13,8 @@
 
     - name: copy app to remote server
       synchronize:
-        src: "{{ ansible_node_path }}"
-        dest: "{{ app_path }}"
+        src: "{{ app_path }}"
+        dest: "{{ copy_to_directory }}"
         recursive: yes
         delete: yes
 
