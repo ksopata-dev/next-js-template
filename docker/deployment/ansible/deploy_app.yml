@@ -54,7 +54,7 @@
       command: rm -rf "{{ deployment_path }}"
 
     - name: copy built app to deployment path
-      command: mv -f "{{ app_path }}/.next" "{{ deployment_path }}"
+      command: mv -f "{{ app_path }}/.next" "{{ deployment_path }}/.next"
 
     - name: copy node modules files to deployment path
       command: mv -f "{{ app_path }}/node_modules" "{{ deployment_path }}/node_modules"
