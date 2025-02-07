@@ -127,3 +127,5 @@ gathers details about the connected hosts. (Can be limited with `--limit`)
 ```
 
 ```
+
+TODO: We need to avoid clearing the deployment directory in ansbile playbook
