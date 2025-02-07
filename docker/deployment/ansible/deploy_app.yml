@@ -51,7 +51,7 @@
         chdir: "{{ app_path }}"
 
     - name: cleanup deployment path
-      command: rm -f "{{ deployment_path }}"
+      command: rm -rf "{{ deployment_path }}"
 
     - name: copy built app to deployment path
       command: mv -f "{{ app_path }}/.next" "{{ deployment_path }}"
