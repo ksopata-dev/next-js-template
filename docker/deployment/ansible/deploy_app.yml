@@ -56,6 +56,12 @@
     - name: copy built app to deployment path
       command: mv -f "{{ app_path }}/.next" "{{ deployment_path }}"
 
+    - name: copy node modules files to deployment path
+      command: mv -f "{{ app_path }}/node_modules" "{{ deployment_path }}/node_modules"
+
+    - name: copy package.json file to deployment path
+      command: mv -f "{{ app_path }}/package.json" "{{ deployment_path }}/package.json"
+
     - name: copy static files to deployment path
       command: mv -f "{{ app_path }}/public" "{{ deployment_path }}/public"
 
