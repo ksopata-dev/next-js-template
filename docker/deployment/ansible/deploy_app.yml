@@ -51,10 +51,10 @@
         chdir: "{{ app_path }}"
 
     - name: copy built app to deployment path
-      command: mv "{{ app_path }}/.next" "{{ deployment_path }}"
+      command: mv -f "{{ app_path }}/.next" "{{ deployment_path }}"
 
     - name: copy static files to deployment path
-      command: mv "{{ app_path }}/public" "{{ deployment_path }}/public"
+      command: mv -f "{{ app_path }}/public" "{{ deployment_path }}/public"
 
     - name: create systemd service file for next.js
       synchronize:
