@@ -68,20 +68,7 @@
     - name: copy static files to deployment path
       command: mv -f "{{ app_path }}/public" "{{ deployment_path }}/public"
 
-    - name: create systemd service file for next.js
-      synchronize:
-        src: "{{ service_file_path }}"
-        dest: /etc/systemd/system/
-        recursive: yes
-        delete: yes
-
-    - name: reload systemd
-      command: systemctl daemon-reload
-      become: yes
-
-    - name: start and enable next.js service
-      systemd:
-        name: nextjs
-        state: started
-        enabled: yes
-      become: yes
+    - name: start app
+      command: npm start
+      args:
+        chdir: "{{ deployment_path }}"
