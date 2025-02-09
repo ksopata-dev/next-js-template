@@ -1,0 +1,62 @@
+---
+- name: rebuild and deploy Next.js app
+  hosts: all
+  become: true
+  vars:
+    ansible_source_code_directory: /home/nextjs/nextjs-app/web-app
+    temp_directory: /home/nextjs/temp
+    temp_webapp_directory: /home/nextjs/temp/web-app
+    appication_path: /var/www/nextjs-app
+  tasks:
+    - name: ensure rsync is installed
+      package:
+        name: rsync
+
+    - name: copy app to remote server
+      synchronize:
+        src: "{{ ansible_source_code_directory }}"
+        dest: "{{ temp_directory }}"
+        rsync_opts:
+          - "--exclude=node_modules"
+          - "--exclude=.next"
+
+    - name: verify app directory exists
+      stat:
+        path: "{{ appication_path }}"
+      register: app_dir
+
+    - name: fail if app directory does not exist
+      fail:
+        msg: "The app directory {{ appication_path }} does not exist."
+      when: not app_dir.stat.exists
+
+    - name: install dependencies
+      command: npm install
+      args:
+        chdir: "{{ temp_webapp_directory }}"
+
+    - name: build the next.js app
+      command: npm run build
+      args:
+        chdir: "{{ temp_webapp_directory }}"
+
+    - name: cleanup deployment path
+      command: rm -rf "{{ appication_path }}/.next"
+
+    - name: cleanup node modules path
+      command: rm -rf "{{ appication_path }}/node_modules"
+
+    - name: cleanup node modules path
+      command: rm -rf "{{ appication_path }}/public"
+
+    - name: copy built app to deployment path
+      command: mv -f "{{ temp_webapp_directory }}/.next" "{{ appication_path }}/.next"
+
+    - name: copy node modules files to deployment path
+      command: mv -f "{{ temp_webapp_directory }}/node_modules" "{{ appication_path }}/node_modules"
+
+    - name: copy package.json file to deployment path
+      command: mv -f "{{ temp_webapp_directory }}/package.json" "{{ appication_path }}/package.json"
+
+    - name: copy static files to deployment path
+      command: mv -f "{{ temp_webapp_directory }}/public" "{{ appication_path }}/public"

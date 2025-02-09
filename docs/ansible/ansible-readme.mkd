@@ -1,0 +1,134 @@
+# Ansible deployment
+
+Assuming that the docker containers have been initialized with the projects `docker-compose.yml`, there shoulde be an `ansible` container initialized. This is a linxu container which would act as node triggering the deployment on the configured remote hosts - which could be pointing to remote servers or an out-of-the-box `webapp` container.
+
+By default, the hosts configuration is pointing only to the `webapp` container.
+
+## Ansible guide
+
+An ansible guide worth recommending can be found under [this link](https://www.youtube.com/playlist?list=PLT98CRl2KxKEUHie1m24-wkyHpEsa4Y70).
+
+## Connecting to ansible node
+
+Since the `ansible` or `webapp` node is the docker container, it can be accessed as any other docker container byt:
+
+- using the docker termianl:
+
+![docker-terminal](docker-terminal.png)
+
+- connecting with the cmd:
+
+```
+docker exec -t -i ansible /bin/bash
+```
+
+![docker-bash](docker-bash.png)
+
+However, assuming that in future the hosts would be a real remote servers, a PuTTy can be configured for that purpouse - to be downloaded from [here](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe).
+
+PuTTy will connect via SSH which by default would be expsoed on servers under `22` port. For the docker containers, those were exposed under `2222` (web-app) amd `2223` (ansible).
+
+After running, fill the:
+
+`Host Name` with `localhost`,
+`Port` with `2222` or `2223`,
+
+![putty configuration](putty.png)
+
+In new window, when prompted for username and password use nextjs|password.
+
+![putty successfull login](putty-logged-in.png)
+
+## SSH connection between nodes
+
+To connect to `webapp` from `ansible` node below command can be used:
+
+```
+ssh host.docker.internal -p 2222
+```
+
+(out of the box, the `nextjs` user password is set to `password`)
+
+In order to be able to run the ansible deployments and not be prompted for the password every time we attempt to connect to the destination node, we can generate a dedicate ssh key. From the `ansible` node run the:
+
+```
+ssh-keygen -t ed25519 -C "ansible"
+```
+
+- for `directory`, please provide the `/home/nextjs/.ssh/ansible`
+- for `passphrase`, please do not provide anything
+
+![ssh key generation](ssh-keygen.png)
+
+_note: if using different key name then ansible, this will need to be reflected in the $/docker/ansible/ansible.cfg file_
+
+extracted key can be then imported into the nodejs node by running the:
+
+```
+ssh-copy-id -i /home/nextjs/.ssh/ansible -p 2222 host.docker.internal
+```
+
+![ssh copy key](ssh-copy-id.png)
+
+\_note: If you are re-importing the ceritificate to the webapp container after this one was re-created you might encounter an exception that `REMOTE HOST IDENTIFICATION HAS CHANGED!`.
+This is due to the fact that the webapp node is already stored in the known hosts configuration in ansible node. To clear it, please run the `ssh-keygen -f "/home/nextjs/.ssh/known_hosts" -R "[host.docker.internal]:2222"`
+
+Now, when connecting with:
+
+```
+ssh -i /home/nextjs/.ssh/ansible -p 2222 host.docker.internal
+```
+
+You should not be prompted for the password. Also the key should be now added to `webapp` node authorized_keys
+
+![authorized keys](authorized-keys.png)
+
+# Configuring ansible
+
+At this point you should have a ssh key generated in the previous step.
+This key is referenced by the `ansible.cfg` so if the key was generated with name other then `ansible` this need to be adjusted there.
+
+List of the servers to use for deployment can be configured with `$/docker/deployment/ansible/inventory` file - as described aboe this file is referencing only the dockerized webapp server. To execute the deployment on remote servers, those would need to be configured here.
+
+During the process of container setup, two important directories are created in this container:
+
+- `/home/nextjs/ansible` - contains all the playbooks and configuration from the `$/docker/ansible',
+- `/home/nextjs/nextjs-app` - contains the nextjs app from `$/web-app`,
+
+Important to note is that to be able to run ansible the ansible configuration cannot be a docker volume mounted to the local directory. This is why the `ansible.cfg` and `inventory` files are copied to when building the docker image and to update them, those need to be updated on `ansible` node or the image needs to be recreated. For the ansible playbooks and web-app source, those volumes are mounted to the local directories and any changes done in those locally, would be automatically available on ansible node.
+
+Hence to run the ansible commands this should be done from `/home/nextjs/ansible` directory
+
+To check the `inventory` file configuration you should be able to run the:
+
+```
+ansible all -m ping
+```
+
+Below result should indicate successfull ping
+
+![ansible ping](ansible-ping.png)
+
+# Runing ansible playbooks
+
+There is some minor differnece between how the npm service will be running in the destination server and the local nextjs contaier - for the first one, dedicated service will be set, while on docker container, to be able to run the ssh and npm services, a `supervisor` package is used. As of today, this differnece is handled by using two different playbooks for the deployment purpouse:
+
+- `rebuild.yml` - performing the build of the next js applicaiton and dropping it to the remote server - this step would be the same for both local and remote deployment,
+- `restart-docker.yml` - performing a restart of the npm service - locally using supervisor, while on remote, an actual npm service would be to be restarted,
+
+Deployment of the changes to the `webapp` using the playbooks can be hence run with:
+
+```
+ansible-playbook --ask-become-pass ./playbooks/rebuild.yml
+ansible-playbook --ask-become-pass ./playbooks/restart-npm-docker.yml
+```
+
+![playbook execution](playbook-exec.png)
+
+# Useful commands:
+
+```
+ansible all -m gather_facts
+```
+
+gathers details about the connected hosts. (Can be limited with `--limit`)

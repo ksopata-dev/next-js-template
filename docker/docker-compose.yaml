@@ -1,10 +1,14 @@
-name: next-js-template
+name: next-js-template-app
 services:
   web-app:
     build: ..\web-app
-    image: next-js-templateclear
+    image: next-js-template-webapp
+    container_name: webapp
     ports:
-      - "3000:3000"
+      - "2222:22"
+      - "3001:3000"
+    volumes:
+      - ./webapp/supervisor:/etc/supervisor
   postgres-db:
     image: postgres:16
     container_name: pg-db
@@ -23,5 +27,17 @@ services:
       PGADMIN_DEFAULT_EMAIL: pguser@postgres.com
       PGADMIN_DEFAULT_PASSWORD: pgpassword
     volumes:
-      - ./pg-servers.json:/pgadmin4/servers.json
-      - ./pgpass:/pgpass
+      - ./postgres/pg-servers.json:/pgadmin4/servers.json
+      - ./postgres/pgpass:/pgpass
+  ansible:
+    build: ./ansible
+    container_name: ansible
+    command: /bin/bash
+    tty: true
+    environment:
+      - ANSIBLE_HOST_KEY_CHECKING=False
+    ports:
+      - "2223:22"
+    volumes:
+      - ../web-app:/home/nextjs/nextjs-app/web-app
+      - ./ansible/playbooks:/home/nextjs/ansible/playbooks

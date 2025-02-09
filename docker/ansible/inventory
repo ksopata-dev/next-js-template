@@ -1,0 +1,2 @@
+[webservers]
+docker-webapp ansible_host=host.docker.internal ansible_port=2222
