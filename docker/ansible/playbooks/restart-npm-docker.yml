@@ -1,0 +1,11 @@
+---
+- name: restart next js app on the docker container
+  hosts: all
+  become: true
+  vars:
+    applcication_path: /var/www/nextjs-app
+  tasks:
+    - name: restart nextjs-app service
+      ansible.builtin.command:
+        cmd: supervisorctl restart nextjs-app
+      become: yes

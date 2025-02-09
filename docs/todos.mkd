@@ -1,0 +1,3 @@
+| Area    | Priority | Name              | Description                                                          |
+| ------- | -------- | ----------------- | -------------------------------------------------------------------- |
+| Ansible | Medium   | Directory cleanup | Reconsider if cleaning up directories during rebuild playbook is ok. |

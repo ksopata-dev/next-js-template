@@ -12,8 +12,11 @@ RUN apt-get install -y openssh-server
 RUN apt-get install -y rsync
 RUN apt-get clean;
 
-RUN useradd -m -s /bin/bash ans_dep && \
-    echo 'ans_dep ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-RUN echo 'ans_dep:password' | chpasswd 
+RUN useradd -m -s /bin/bash nextjs && \
+    echo 'nextjs ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN echo 'nextjs:password' | chpasswd
 
-USER ans_dep
+COPY ./ansible.cfg /home/nextjs/ansible/ansible.cfg
+COPY ./inventory /home/nextjs/ansible/inventory
+
+USER nextjs
