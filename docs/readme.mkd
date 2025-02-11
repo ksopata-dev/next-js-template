@@ -5,7 +5,6 @@ This repository contains a set of solutions that can be used as a staring point 
 # Deployment
 
 Using `$/docker/docker-compose.yml` configuration, below set of containers can be created:
-
 - `webapp` - container dedicated to host the main `next.js` applicaton,
 - `webapp-db-postgres` - container with instance of Postgres database,
 - `pg-db-admin` - container with instance of Postgres db admin to connect to postgres db,
