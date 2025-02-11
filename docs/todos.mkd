@@ -1,3 +1,4 @@
 | Area    | Priority | Name              | Description                                                          |
 | ------- | -------- | ----------------- | -------------------------------------------------------------------- |
 | Ansible | Medium   | Directory cleanup | Reconsider if cleaning up directories during rebuild playbook is ok. |
+| Docker  | Medium   | Variables         | Add veriables to store paramerters like postgress user or parssword  |
